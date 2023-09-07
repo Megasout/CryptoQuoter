@@ -1,0 +1,99 @@
+@import "globalVars";
+
+@mixin custom-block($-text-Color, $-bg-Color, $-b-radius) {
+    font-size: large;
+    width: 100%;
+    height: 40px;
+    border-radius: $-b-radius;
+    background: $-bg-Color;
+    color: $-text-Color;
+}
+
+.appContainer {
+    width: 70%;
+    // height: 80%;
+    display: flex;
+    margin: 0 auto;
+    margin-top: 5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+}
+
+.imageContainer {
+    width: 40%;
+    margin: 0 auto;
+}
+
+.functionsContainer {
+    flex: 1;
+}
+
+
+@media (max-width: 731px) {
+    .appContainer {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .imageContainer {
+        width: 70%;
+        order: 1;
+    }
+
+    .functionsContainer {
+        flex: 0;
+        width: 100%;
+    }
+
+}
+
+.functionsContainer h1 {
+    color: $title-color;
+    font-size: xxx-large;
+    text-align: start;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
+
+.line {
+    background: crimson;
+    width: 75%;
+    height: 5px;
+    margin-bottom: 35px;
+}
+
+.select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.select label {
+    font-size: x-large;
+    font-weight: 500;
+    font-family: sans-serif;
+}
+
+.select select {
+    @include custom-block(#000000, #ffffff, 10px);
+    display: block;
+    padding-left: 15px;
+}
+
+.select select:focus {
+    border: 3px solid crimson
+}
+
+.button {
+    @include custom-block(white, #781db9, 5px);
+    border: none;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.button:hover {
+    background-color: #571587;
+    cursor: pointer;
+}
