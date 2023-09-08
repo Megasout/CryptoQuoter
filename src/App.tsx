@@ -1,9 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.scss'
 import image from "./assets/imagen-criptos.png"
 import useSelectCurrency from './hooks/useSelectCurrency'
+import ErrorMessage from './components/ErrorMessage'
 
 function App() {
+  const [error, setError] = useState<string>('')
+
   //TODO: hooks personalizados
   const { state: currency, SelectCurrency } = useSelectCurrency({
     initOptions: [
@@ -44,6 +47,16 @@ function App() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    console.log('press')
+
+    if (currency == '')
+      return setError('Seleccione una moneda')
+
+    if (crypto == '')
+      return setError('Seleccione una criptomoneda')
+
+    console.log('enviar datos')
   }
 
   return (
@@ -63,6 +76,8 @@ function App() {
             type='submit'
             value='Cotizar' />
         </form>
+        {error != '' &&
+          (<ErrorMessage>{error}</ErrorMessage>)}
       </div>
     </main>
   )
