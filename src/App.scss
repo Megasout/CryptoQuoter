@@ -1,3 +1,5 @@
+//TODO: "style components react" agregar esto a apuntes 
+//Tener en cuenta tambien los eventos o pseudoclases
 @import "globalVars";
 
 @mixin custom-block($-text-Color, $-bg-Color, $-b-radius) {
@@ -11,7 +13,6 @@
 
 .appContainer {
     width: 70%;
-    // height: 80%;
     display: flex;
     margin: 0 auto;
     margin-top: 5rem;
@@ -23,6 +24,7 @@
 .imageContainer {
     width: 40%;
     margin: 0 auto;
+    
 }
 
 .functionsContainer {
@@ -74,6 +76,10 @@
     font-size: x-large;
     font-weight: 500;
     font-family: sans-serif;
+}
+
+.select label:hover {
+    cursor: pointer;
 }
 
 .select select {

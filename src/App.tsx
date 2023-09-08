@@ -1,11 +1,50 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import './App.scss'
 import image from "./assets/imagen-criptos.png"
-
+import useSelectCurrency from './hooks/useSelectCurrency'
 
 function App() {
-  const [currency, setCurrency] = useState<string>('')
-  const [crypto, setCrypto] = useState<string>('')
+  //TODO: hooks personalizados
+  const { state: currency, SelectCurrency } = useSelectCurrency({
+    initOptions: [
+      { id: 'USD', name: 'Dolar de Estados Unidos' },
+      { id: 'UYU', name: 'Peso Uruguayo' },
+      { id: 'JPY', name: 'Yen Japones' },
+      { id: 'EUR', name: 'Euro' }],
+    title: 'Seleccione la moneda',
+  })
+
+  const {
+    state: crypto,
+    SelectCurrency: SelectCrypto,
+    addOptions: setCryptos
+  } = useSelectCurrency({
+    initOptions: [],
+    title: 'Seleccione la criptomoneda',
+  })
+
+  useEffect(() => {
+    async function responseApi() {
+      const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD"
+      const response = await fetch(url)
+      const result = await response.json()
+
+      const arrayCryptos: CurrencyType[] = result.Data.map(
+        (crypto: any) => {
+          return { id: crypto.CoinInfo.Name, name: crypto.CoinInfo.FullName }
+        }
+      )
+
+      setCryptos(arrayCryptos)
+    }
+
+    responseApi()
+
+  }, [])
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+  }
 
   return (
     <main className='appContainer'>
@@ -16,17 +55,9 @@ function App() {
       <div className='functionsContainer'>
         <h1>Cotiza una Criptomoneda</h1>
         <div className='line' />
-        <form>
-          <SelectLabel
-            options={[]}
-            title='Seleccione su moneda'
-            value={currency}
-            setValue={setCurrency} />
-          <SelectLabel
-            options={[]}
-            title='Seleccione la criptomoneda'
-            value={crypto}
-            setValue={setCrypto} />
+        <form onSubmit={handleSubmit}>
+          <SelectCurrency />
+          <SelectCrypto />
           <input
             className='button'
             type='submit'
@@ -39,28 +70,7 @@ function App() {
 
 export default App
 
-
-type SelectLabelProps = {
-  options: string[]
-  title: string
-  value: string
-  setValue: (value: string) => void
-}
-
-function SelectLabel(props: SelectLabelProps) {
-  const { title, options, value, setValue } = props
-
-  return (
-    <div className='select'>
-      <label>{title}</label>
-      <select value={value}
-        onChange={(e) => setValue(e.target.value)}>
-        <option>Seleccionar</option>
-        {options.map((value) => (
-          <option value={value}>
-            {value}
-          </option>))}
-      </select>
-    </div>
-  )
+export type CurrencyType = {
+  id: string
+  name: string
 }
