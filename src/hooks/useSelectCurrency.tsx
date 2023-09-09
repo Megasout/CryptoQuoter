@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { CurrencyType } from "../App"
-  //TODO: hooks personalizados
+
 function useSelectCurrency(props: SelectLabelProps) {
     const {initOptions, title} = props
 

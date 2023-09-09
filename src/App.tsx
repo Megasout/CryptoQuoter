@@ -12,7 +12,6 @@ function App() {
   const [convertionData, setConvertionData] = useState<CryptoData>()
   const [loader, setLoader] = useState(false)
 
-  //TODO: hooks personalizados
   const { state: currency, SelectCurrency } = useSelectCurrency({
     initOptions: [
       { id: 'USD', name: 'Dolar de Estados Unidos' },
