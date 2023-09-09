@@ -2,10 +2,15 @@ import { useEffect, useState } from 'react'
 import './App.scss'
 import image from "./assets/imagen-criptos.png"
 import useSelectCurrency from './hooks/useSelectCurrency'
-import ErrorMessage from './components/ErrorMessage'
+import { ErrorMessage } from './Components/StyledComponets'
+import { ReadApi } from './helpers'
+import Result from './Components/Result'
+import Spiner from './Components/Spinner'
 
 function App() {
   const [error, setError] = useState<string>('')
+  const [convertionData, setConvertionData] = useState<CryptoData>()
+  const [loader, setLoader] = useState(false)
 
   //TODO: hooks personalizados
   const { state: currency, SelectCurrency } = useSelectCurrency({
@@ -26,29 +31,19 @@ function App() {
     title: 'Seleccione la criptomoneda',
   })
 
+  const readApi = ReadApi.getInstance()
+
   useEffect(() => {
     async function responseApi() {
-      const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD"
-      const response = await fetch(url)
-      const result = await response.json()
-
-      const arrayCryptos: CurrencyType[] = result.Data.map(
-        (crypto: any) => {
-          return { id: crypto.CoinInfo.Name, name: crypto.CoinInfo.FullName }
-        }
-      )
-
-      setCryptos(arrayCryptos)
+      setCryptos(await readApi.getCryptoCurrency())
     }
 
     responseApi()
-
   }, [])
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoader(true)
     e.preventDefault()
-
-    console.log('press')
 
     if (currency == '')
       return setError('Seleccione una moneda')
@@ -56,7 +51,12 @@ function App() {
     if (crypto == '')
       return setError('Seleccione una criptomoneda')
 
-    console.log('enviar datos')
+
+    setError('')
+
+    const data = await readApi.getCryptoData(currency, crypto)
+    setConvertionData({ ...data, region: currency })
+    setLoader(false)
   }
 
   return (
@@ -78,6 +78,16 @@ function App() {
         </form>
         {error != '' &&
           (<ErrorMessage>{error}</ErrorMessage>)}
+        { loader ? (<Spiner/>) 
+        : typeof convertionData != 'undefined' &&
+          (<Result
+            region={convertionData.region}
+            price={convertionData.price}
+            hight={convertionData.hight}
+            low={convertionData.low}
+            change24Hours={convertionData.change24Hours}
+            lastUpdate={convertionData.lastUpdate}
+            imageUrl={convertionData.imageUrl} />)}
       </div>
     </main>
   )
@@ -88,4 +98,14 @@ export default App
 export type CurrencyType = {
   id: string
   name: string
+}
+
+export type CryptoData = {
+  price: number
+  hight: number
+  low: number
+  change24Hours: number
+  lastUpdate: number
+  imageUrl: string
+  region?: string
 }

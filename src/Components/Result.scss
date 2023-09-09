@@ -1,0 +1,22 @@
+.responseContainer{
+    display: flex;
+}
+
+
+.responseContainer img{
+    margin: 0 auto;
+    width: 25%;
+    // height: 50px;
+    align-self: center;
+}
+
+@media (max-width: 730px){
+    .responseContainer{
+        flex-direction: column;
+    }
+
+    .responseContainer img{
+        order: 1;
+        width: 45%;
+    }
+}
